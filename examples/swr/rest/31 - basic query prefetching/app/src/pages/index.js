@@ -1,12 +1,15 @@
 import React from 'react'
-import { useQuery, queryCache } from 'react-query'
-import axios from 'axios'
+import useSWR, { mutate } from 'swr'
 
+// TODO <link rel="preload" href="/api/data" as="fetch" crossorigin="anonymous">
+// TODO it works, but it's very aggressively invalidates the data
+// TODO  if prefetched I would except not to do network request again so soon
+const urlKey = 'https://jsonplaceholder.typicode.com/posts'
 export default function App() {
   const [show, toggle] = React.useReducer(d => !d, false)
 
   React.useEffect(() => {
-    queryCache.prefetchQuery('posts', fetchPosts)
+    mutate(urlKey, fetchPosts(urlKey))
   }, [])
 
   return (
@@ -17,21 +20,21 @@ export default function App() {
   )
 }
 
-async function fetchPosts() {
+async function fetchPosts(url) {
   await new Promise(resolve => setTimeout(resolve, 1000))
-  return axios
-    .get('https://jsonplaceholder.typicode.com/posts')
-    .then(res => res.data.slice(0, 10))
+  return fetch(url)
+    .then(res => res.json())
+    .then(data =>  data.slice(0, 10))
 }
 
 function Posts({ setPostId }) {
-  const postsQuery = useQuery('posts', fetchPosts)
+  const postsQuery = useSWR(urlKey, fetchPosts)
 
   return (
     <div>
-      <h1>Posts {postsQuery.isFetching ? '...' : null}</h1>
+      <h1>Posts {postsQuery.isValidating ? '...' : null}</h1>
       <div>
-        {postsQuery.isLoading ? (
+        {!postsQuery.data ? (
           'Loading posts...'
         ) : (
           <ul>

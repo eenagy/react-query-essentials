@@ -29,6 +29,7 @@ function Posts({ setPostId }) {
                       () => fetchPost(post.id),
                       null,
                       {
+                        // TODO I don't remember what is the usecase for this
                         force: true,
                       }
                     )

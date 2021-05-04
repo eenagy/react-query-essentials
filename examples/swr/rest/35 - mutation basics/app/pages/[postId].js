@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-//
+// TODO this is not used in this example
 
 import PostForm from '../components/PostForm'
 

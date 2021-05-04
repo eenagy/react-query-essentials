@@ -2,6 +2,7 @@ import React from 'react'
 import { useQuery, queryCache } from 'react-query'
 import axios from 'axios'
 
+// TODO no such thing swr
 export default function Posts() {
   const randomQuery = useQuery(
     'random',

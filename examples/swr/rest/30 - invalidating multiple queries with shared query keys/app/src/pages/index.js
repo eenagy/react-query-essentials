@@ -2,6 +2,8 @@ import React from 'react'
 import { useQuery, queryCache } from 'react-query'
 import axios from 'axios'
 
+// TODO no such thing
+// TODO you can make a custom function to invalidate each key by deleting the cache key
 export default function App() {
   return (
     <div>

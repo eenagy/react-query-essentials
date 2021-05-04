@@ -2,7 +2,6 @@ import React from 'react'
 import App from 'next/app'
 import { createGlobalStyle } from 'styled-components'
 import normalize from 'styled-normalize'
-import { ReactQueryDevtools } from 'react-query-devtools'
 
 //
 
@@ -48,7 +47,6 @@ export default class MyApp extends App {
         <Main>
           <Component {...pageProps} />
         </Main>
-        <ReactQueryDevtools />
       </Wrapper>
     )
   }

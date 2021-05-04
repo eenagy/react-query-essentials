@@ -24,6 +24,8 @@ function Posts({ setPostId }) {
                 <li
                   key={post.id}
                   onMouseEnter={() => {
+                    // TODO not going to work as fetch once is buggy
+                    // TODO recheck when fetchOnce is fixed
                     queryCache.prefetchQuery(
                       ['post', post.id],
                       () => fetchPost(post.id),

@@ -1,22 +1,25 @@
 import React from 'react'
-import { useQuery, queryCache } from 'react-query'
-import axios from 'axios'
+import useSWR, {cache} from 'swr';
 
 export default function Posts() {
-  const randomQuery = useQuery('random', async () => {
-    return axios.get('/api/random').then(res => res.data)
-  })
-
+  const randomQuery = useSWR(
+    '/api/random',
+    async (url) => {
+      return fetch(url).then(res => res.json())
+    }
+  )
   return (
     <div>
-      <h1>Random Number {randomQuery.isFetching ? '...' : null}</h1>
+      <h1>Random Number {randomQuery.isValidating ? '...' : null}</h1>
       <h2>
-        {randomQuery.isLoading
+        {!randomQuery.data
           ? 'Loading random number...'
           : Math.round(randomQuery.data.random * 1000)}
       </h2>
       <div>
-        <button onClick={() => queryCache.invalidateQueries('random')}>
+        <button onClick={() => {
+          //TODO cache invalidation doesn't work progrematically at this point
+        }}>
           Invalidate Random Number
         </button>
       </div>

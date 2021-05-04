@@ -1,21 +1,25 @@
 import React from 'react'
-import { useQuery, queryCache } from 'react-query'
-import { ReactQueryDevtools } from 'react-query-devtools'
-import axios from 'axios'
+import useSWR from 'swr'
+
+const delayedFetcher = async url => {
+  return new Promise(resolve => setTimeout(resolve, 100))
+    .then(() => {
+      return fetch(url)
+    })
+    .then(r => r.json())
+}
 
 function Posts({ setPostId }) {
-  const postsQuery = useQuery('posts', async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    return axios
-      .get('https://jsonplaceholder.typicode.com/posts')
-      .then(res => res.data.slice(0, 10))
-  })
+  const postsQuery = useSWR(
+    'https://jsonplaceholder.typicode.com/posts',
+    url => delayedFetcher(url).then(d => d.slice(0, 10))
+  )
 
   return (
     <div>
-      <h1>Posts {postsQuery.isFetching ? '...' : null}</h1>
+      <h1>Posts {postsQuery.isValidating ? '...' : null}</h1>
       <div>
-        {postsQuery.isLoading ? (
+        {!postsQuery.data ? (
           'Loading posts...'
         ) : (
           <ul>
@@ -24,6 +28,7 @@ function Posts({ setPostId }) {
                 <li
                   key={post.id}
                   onMouseEnter={() => {
+                    // TODO you cannot do invalidation per array selection
                     queryCache.prefetchQuery(['post', post.id], () =>
                       fetchPost(post.id)
                     )
